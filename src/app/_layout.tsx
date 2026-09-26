@@ -1,18 +1,34 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { Stack, router } from "expo-router";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import IconButton from "@/Components/IconButton";
 
-SplashScreen.preventAutoHideAsync();
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+  <Stack screenOptions={{headerBackButtonDisplayMode: 'minimal'}}>
+    <Stack.Screen 
+      name="index"
+      options= {{
+        title: 'Criminal Intent',
+        headerStyle: {
+          backgroundColor: '#6A1B9A'
+        },
+        headerTintColor: 'white',
+        headerRight: () => (
+          <IconButton icon="add" size={36} color="white" onPress={() => router.push("/new-crime")} />
+        ),
+        // iOS only: same button, but without the iOS 26 glass bubble behind it.
+        unstable_headerRightItems: () => [
+          {
+            type: "custom",
+            element: <IconButton icon="add" size={36} color="white" onPress={() => router.push("/new-crime")} />,
+            hidesSharedBackground: true,
+          },
+        ],
+      }}
+    />
+    <Stack.Screen name="new-crime" options={{ title: "Criminal Intent", headerTintColor: "white", headerStyle: { backgroundColor: '#6A1B9A'} }} />
+
+  </Stack>
+  
   );
 }
