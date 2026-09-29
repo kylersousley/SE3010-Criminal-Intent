@@ -1,21 +1,37 @@
 import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform } from "react-native";
 import { useState } from "react";
 import { Checkbox } from 'expo-checkbox';
+import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
 import * as ImagePicker from 'expo-image-picker';
 
-
-import Ionicons from '@expo/vector-icons/Ionicons';
 import IconButton from "@/Components/IconButton";
 import AppButton from "@/Components/AppButton";
+import { saveCrimes, getCrimes } from "@/storage/crimeStorage";
 
 export default function NewCrime() {
     const [image, setImage] = useState<string | null>(null);
     const [date, setDate] = useState(new Date());
     const [isChecked, setChecked] = useState(false);
+    const [title, setTitle] = useState("");
+    const [details, setDetails] = useState("");
 
-    // Android shows the picker as a dialog, so open it on demand.
+    const handleSave = async () => {
+        const crime = {
+            id: Date.now().toString(),
+            title,
+            details,
+            date: date.toISOString(),
+            solved: isChecked,
+            image,
+        };
+
+        const crimes = await getCrimes();
+        await saveCrimes([...crimes, crime]);
+        router.back();
+    };
+
     const showDatePicker = () => {
         DateTimePickerAndroid.open({
             value: date,
@@ -38,9 +54,6 @@ export default function NewCrime() {
     };
 
   const takePhoto = async () => {
-    // Camera access always requires the user's permission.
-    // Taking a photo also requires a device with a camera. The iOS Simulator
-    // does not have one, so use a physical device to test this button.
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
@@ -76,13 +89,13 @@ export default function NewCrime() {
             </View>
             <View style={styles.titleSection}>
                 <Text style={styles.text}>Title</Text>
-                <TextInput style={styles.input} placeholder="Title" placeholderTextColor="gray" />
+                <TextInput style={styles.input} placeholder="Title" placeholderTextColor="gray" value={title} onChangeText={setTitle} />
             </View>
         </View>
 
         <View>
             <Text style={styles.text}>Details</Text>
-            <TextInput style={styles.detailsInput} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done"/>
+            <TextInput style={styles.detailsInput} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setTitle} />
         </View>
         <View style={styles.dateContainer}>
             {Platform.OS === "ios" ? (
@@ -104,7 +117,7 @@ export default function NewCrime() {
             <Checkbox value={isChecked} onValueChange={setChecked} />
             <Text style={styles.checkBoxText}>Solved</Text>
         </View>
-        <AppButton title="Save" onPress={() => { /* TODO: save the crime */ }} />
+        <AppButton title="Save" onPress={handleSave} />
     </View>
   );
 }
