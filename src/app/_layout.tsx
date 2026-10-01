@@ -3,6 +3,12 @@ import { Stack, router } from "expo-router";
 import IconButton from "@/Components/IconButton";
 
 export default function RootLayout() {
+  const sendData = () => {
+    router.push({
+      pathname: '/new-crime',
+      params: { id: "" }
+    });
+  }
   return (
   <Stack screenOptions={{headerBackButtonDisplayMode: 'minimal'}}>
     <Stack.Screen 
@@ -14,7 +20,7 @@ export default function RootLayout() {
         },
         headerTintColor: 'white',
         headerRight: () => (
-          <IconButton icon="add" size={36} color="white" onPress={() => router.push("/new-crime")} />
+          <IconButton icon="add" size={36} color="white" onPress={sendData} />
         ),
         // iOS only: same button, but without the iOS 26 glass bubble behind it.
         unstable_headerRightItems: () => [

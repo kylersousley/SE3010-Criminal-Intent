@@ -1,25 +1,39 @@
 import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from 'expo-checkbox';
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
 import * as ImagePicker from 'expo-image-picker';
 
 import IconButton from "@/Components/IconButton";
 import AppButton from "@/Components/AppButton";
-import { saveCrimes, getCrimes } from "@/storage/crimeStorage";
+import { saveCrimes, getCrimes, getCrime } from "@/storage/crimeStorage";
 
 export default function NewCrime() {
+    const { id } = useLocalSearchParams();
+    const crimeID = Array.isArray(id) ? id[0] : id;
+   
     const [image, setImage] = useState<string | null>(null);
     const [date, setDate] = useState(new Date());
     const [isChecked, setChecked] = useState(false);
     const [title, setTitle] = useState("");
     const [details, setDetails] = useState("");
 
+    useEffect(() => {
+      if (!crimeID) return;
+      getCrime(crimeID).then((crime) => {
+        setImage(crime.image)
+        setTitle(crime.title)
+        setDetails(crime.details)
+        setDate(new Date(crime.date))
+        setChecked(crime.solved)
+      })
+    }, [crimeID]);
+
     const handleSave = async () => {
         const crime = {
-            id: Date.now().toString(),
+            id: crimeID || Date.now().toString(),
             title,
             details,
             date: date.toISOString(),
@@ -28,8 +42,15 @@ export default function NewCrime() {
         };
 
         const crimes = await getCrimes();
-        await saveCrimes([...crimes, crime]);
-        router.back();
+        const index = crimes.findIndex((c) => c.id === crime.id);
+        if (index >= 0) {
+          crimes[index] = crime;
+        } else {
+          crimes.push(crime);
+        }
+        await saveCrimes(crimes);
+
+        Alert.alert("Crime was successfully saved!")
     };
 
     const showDatePicker = () => {
@@ -95,7 +116,7 @@ export default function NewCrime() {
 
         <View>
             <Text style={styles.text}>Details</Text>
-            <TextInput style={styles.detailsInput} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setTitle} />
+            <TextInput style={styles.detailsInput} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setDetails} />
         </View>
         <View style={styles.dateContainer}>
             {Platform.OS === "ios" ? (
