@@ -1,18 +1,10 @@
-import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform } from "react-native";
-import { useContext, useEffect, useState } from "react";
-import { Checkbox } from 'expo-checkbox';
-import { router, useLocalSearchParams } from "expo-router";
-import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { Text, View, StyleSheet } from "react-native";
+import { useContext } from "react";
 import { ThemeContext } from "@/contexts/ThemeContext";
-
-import * as ImagePicker from 'expo-image-picker';
-
-import IconButton from "@/Components/IconButton";
 import AppButton from "@/Components/AppButton";
-import { saveCrimes, getCrimes, getCrime } from "@/storage/crimeStorage";
 
 export default function ChangeTheme() {
-    const { theme, setTheme, mainTextColor, setMainTextColor, textIconColor, setTextIconColor, themeBackgroundColor, setThemeBackgroundColor } = useContext(ThemeContext)
+    const { setTheme, mainTextColor, setMainTextColor, setTextIconColor, themeBackgroundColor, setThemeBackgroundColor } = useContext(ThemeContext)
 
     const themePurple = () => {
         setTheme('#6A1B9A')

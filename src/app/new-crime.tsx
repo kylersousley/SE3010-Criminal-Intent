@@ -1,18 +1,19 @@
-import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform } from "react-native";
+import { Text, View, Alert, StyleSheet, TextInput } from "react-native";
 import { useContext, useEffect, useState } from "react";
-import { Checkbox } from 'expo-checkbox';
-import { router, useLocalSearchParams } from "expo-router";
-import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { useLocalSearchParams } from "expo-router";
 import { ThemeContext } from "@/contexts/ThemeContext";
 
 import * as ImagePicker from 'expo-image-picker';
 
 import IconButton from "@/Components/IconButton";
+import ChoosePhoto from "@/Components/ChoosePhoto";
 import AppButton from "@/Components/AppButton";
+import CustomCheckBox from "@/Components/CustomCheckBox";
+import MultiPlatformDatePicker from "@/Components/MultiPlatformDatePicker";
 import { saveCrimes, getCrimes, getCrime } from "@/storage/crimeStorage";
 
 export default function NewCrime() {
-    const { theme, mainTextColor, textIconColor, themeBackgroundColor } = useContext(ThemeContext)
+    const { mainTextColor, themeBackgroundColor } = useContext(ThemeContext)
     const { id } = useLocalSearchParams();
     const crimeID = Array.isArray(id) ? id[0] : id;
    
@@ -55,15 +56,6 @@ export default function NewCrime() {
         Alert.alert("Crime was successfully saved!")
     };
 
-    const showDatePicker = () => {
-        DateTimePickerAndroid.open({
-            value: date,
-            mode: "date",
-            maximumDate: new Date(),
-            onValueChange: (event, selectedDate) => setDate(selectedDate),
-        });
-    };
-
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
@@ -76,36 +68,11 @@ export default function NewCrime() {
         }
     };
 
-  const takePhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert('Permission required', 'Permission to access the camera is required.');
-      return;
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
     return (
     <View style={[styles.container, { backgroundColor: themeBackgroundColor }]}>
         <View style={styles.container2}>
             <View>
-                {image ? (
-                    <Image source={{ uri: image }} style={styles.image} />
-                ) : (
-                    <View style={[styles.image, styles.imagePlaceholder]} />
-                )}
+                <ChoosePhoto image={image} />
                 <View style={styles.cameraButton}>
                     <IconButton icon="camera" size={36} color="black" onPress={pickImage}/>
                 </View>
@@ -115,31 +82,12 @@ export default function NewCrime() {
                 <TextInput style={[styles.input, { color: mainTextColor }]} placeholder="Title" placeholderTextColor="gray" value={title} onChangeText={setTitle} />
             </View>
         </View>
-
         <View>
             <Text style={[styles.text, { color: mainTextColor }]}>Details</Text>
             <TextInput style={[styles.detailsInput, { color: mainTextColor }]} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setDetails} />
         </View>
-        <View style={styles.dateContainer}>
-            {Platform.OS === "ios" ? (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="spinner"
-                    themeVariant={theme === '#181818' ? 'dark' : 'light'}
-                    textColor={mainTextColor}
-                    style={styles.datePicker}
-                    maximumDate={new Date()}
-                    onValueChange={(event, selectedDate) => setDate(selectedDate)}
-                />
-            ) : (
-                <Button title={date.toLocaleDateString()} color={theme} onPress={showDatePicker} />
-            )}
-        </View>
-        <View style={styles.checkBoxContainer}>
-            <Checkbox value={isChecked} onValueChange={setChecked} />
-            <Text style={[styles.checkBoxText, { color: mainTextColor }]}>Solved</Text>
-        </View>
+        <MultiPlatformDatePicker value={date} mode="date" onValueChange={(_event, selectedDate) => setDate(selectedDate)} displayIOS="spinner" titleAndroid="date.toLocaleDateString()" />
+        <CustomCheckBox value={isChecked} onValueChange={setChecked} color={mainTextColor} text="Solved" />
         <AppButton title="Save" onPress={handleSave} />
     </View>
   );
@@ -155,13 +103,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 15,
-  },
-  image: {
-    width: 150,
-    height: 150,
-  },
-  imagePlaceholder: {
-    backgroundColor: 'lightgray',
   },
   cameraButton: {
     width: '100%',
@@ -192,22 +133,5 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
     textAlignVertical: 'top',
-  },
-  checkBoxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  checkBoxText: {
-    fontSize: 16,
-  },
-  dateContainer: {
-    alignItems: 'center'
-  },
-  datePicker: {
-    width: '100%',
-    //backgroundColor: '#f2f2f2',
-    borderWidth: 1,
-    borderColor: 'lightgray',
   },
 });

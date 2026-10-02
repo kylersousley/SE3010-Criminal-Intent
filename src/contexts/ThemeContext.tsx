@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState } from "react";
 
 const DEFAULT_THEME = '#6A1B9A'
 const DEFAULT_MAIN_TEXT_COLOR = 'black'

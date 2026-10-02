@@ -1,16 +1,7 @@
-import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform, Pressable } from "react-native";
-import { useContext, useState } from "react";
-import { Checkbox } from 'expo-checkbox';
+import { Text, View, StyleSheet, Pressable } from "react-native";
+import { useContext } from "react";
 import { router } from "expo-router";
-import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-
-import * as ImagePicker from 'expo-image-picker';
-
-import IconButton from "@/Components/IconButton";
-import AppButton from "@/Components/AppButton";
-import { saveCrimes, getCrimes } from "@/storage/crimeStorage";
 import { ThemeContext } from "@/contexts/ThemeContext";
 
 type Props = {
@@ -22,9 +13,6 @@ type Props = {
 
 export default function({ id, title, date, isSolved }: Props) {
     const { mainTextColor } = useContext(ThemeContext)
-    const test = () => {
-        console.log("test")
-    }
 
     const sendData = () => {
         router.push({

@@ -14,7 +14,7 @@ export default function RootLayout() {
 }
 
 function ThemedStack() {
-  const {theme, setTheme, textIconColor, setTextIconColor} = useContext(ThemeContext)
+  const {theme, textIconColor} = useContext(ThemeContext)
 
   const sendData = () => {
     router.push({
@@ -38,7 +38,6 @@ function ThemedStack() {
             <IconButton icon="settings-outline" size={36} color={textIconColor} onPress={() => Alert.alert("test")} />
           </View>
         ),
-        // iOS only: same button, but without the iOS 26 glass bubble behind it.
         unstable_headerRightItems: () => [
           {
             type: "custom",
