@@ -1,15 +1,17 @@
 import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform, Pressable } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Checkbox } from 'expo-checkbox';
 import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 import * as ImagePicker from 'expo-image-picker';
 
 import IconButton from "@/Components/IconButton";
 import AppButton from "@/Components/AppButton";
 import { saveCrimes, getCrimes } from "@/storage/crimeStorage";
+import { ThemeContext } from "@/contexts/ThemeContext";
 
 type Props = {
     id: string;
@@ -19,6 +21,7 @@ type Props = {
 };
 
 export default function({ id, title, date, isSolved }: Props) {
+    const { mainTextColor } = useContext(ThemeContext)
     const test = () => {
         console.log("test")
     }
@@ -34,11 +37,11 @@ export default function({ id, title, date, isSolved }: Props) {
         <Pressable onPress={sendData}>
             <View style={styles.container}>
                 <View style={styles.textContainer}>
-                    <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.date}>{date}</Text>
+                    <Text style={[styles.title, { color: mainTextColor }]}>{title}</Text>
+                    <Text style={[styles.date, { color: mainTextColor }]}>{date}</Text>
                 </View>
                 <View style={styles.icon}>
-                    {isSolved && <MaterialCommunityIcons name="handcuffs" size={48} color="black" />}
+                    {isSolved && <MaterialCommunityIcons name="handcuffs" size={48} color={mainTextColor} />}
                 </View>
             </View>
         </Pressable>

@@ -1,3 +1,5 @@
+import { ThemeContext } from '@/contexts/ThemeContext';
+import { useContext } from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 
 type Props = {
@@ -6,23 +8,30 @@ type Props = {
 };
 
 export default function AppButton({title, onPress}: Props) {
+    const { theme, textIconColor } = useContext(ThemeContext);
 
     return (
         <Pressable
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+            style={({ pressed }) => [
+                styles.button,
+                { backgroundColor: theme },
+                pressed && styles.pressed
+            ]}
             onPress={onPress}
         >
-            <Text style={styles.text}>{title}</Text>
+            <Text style={[styles.text, { color: textIconColor }]}>{title}</Text>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#6A1B9A',
         paddingVertical: 12,
         borderRadius: 4,
         alignItems: 'center',
+        width: '100%',
+        opacity: 1,
+        boxShadow: '0px 4px 6px -1px gray'
     },
     pressed: {
         opacity: 0.7,

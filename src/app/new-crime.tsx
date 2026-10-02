@@ -1,8 +1,9 @@
 import { Text, View, Alert, Image, Button, StyleSheet, TextInput, Platform } from "react-native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Checkbox } from 'expo-checkbox';
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { ThemeContext } from "@/contexts/ThemeContext";
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -11,6 +12,7 @@ import AppButton from "@/Components/AppButton";
 import { saveCrimes, getCrimes, getCrime } from "@/storage/crimeStorage";
 
 export default function NewCrime() {
+    const { theme, mainTextColor, textIconColor, themeBackgroundColor } = useContext(ThemeContext)
     const { id } = useLocalSearchParams();
     const crimeID = Array.isArray(id) ? id[0] : id;
    
@@ -96,7 +98,7 @@ export default function NewCrime() {
   };
 
     return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeBackgroundColor }]}>
         <View style={styles.container2}>
             <View>
                 {image ? (
@@ -109,14 +111,14 @@ export default function NewCrime() {
                 </View>
             </View>
             <View style={styles.titleSection}>
-                <Text style={styles.text}>Title</Text>
-                <TextInput style={styles.input} placeholder="Title" placeholderTextColor="gray" value={title} onChangeText={setTitle} />
+                <Text style={[styles.text, { color: mainTextColor }]}>Title</Text>
+                <TextInput style={[styles.input, { color: mainTextColor }]} placeholder="Title" placeholderTextColor="gray" value={title} onChangeText={setTitle} />
             </View>
         </View>
 
         <View>
-            <Text style={styles.text}>Details</Text>
-            <TextInput style={styles.detailsInput} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setDetails} />
+            <Text style={[styles.text, { color: mainTextColor }]}>Details</Text>
+            <TextInput style={[styles.detailsInput, { color: mainTextColor }]} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setDetails} />
         </View>
         <View style={styles.dateContainer}>
             {Platform.OS === "ios" ? (
@@ -124,19 +126,19 @@ export default function NewCrime() {
                     value={date}
                     mode="date"
                     display="spinner"
-                    themeVariant="light"
-                    textColor="black"
+                    themeVariant={theme === '#181818' ? 'dark' : 'light'}
+                    textColor={mainTextColor}
                     style={styles.datePicker}
                     maximumDate={new Date()}
                     onValueChange={(event, selectedDate) => setDate(selectedDate)}
                 />
             ) : (
-                <Button title={date.toLocaleDateString()} onPress={showDatePicker} />
+                <Button title={date.toLocaleDateString()} color={theme} onPress={showDatePicker} />
             )}
         </View>
         <View style={styles.checkBoxContainer}>
             <Checkbox value={isChecked} onValueChange={setChecked} />
-            <Text style={styles.checkBoxText}>Solved</Text>
+            <Text style={[styles.checkBoxText, { color: mainTextColor }]}>Solved</Text>
         </View>
         <AppButton title="Save" onPress={handleSave} />
     </View>
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     width: '100%',
-    backgroundColor: '#f2f2f2',
+    //backgroundColor: '#f2f2f2',
     borderWidth: 1,
     borderColor: 'lightgray',
   },

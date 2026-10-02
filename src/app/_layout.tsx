@@ -1,8 +1,21 @@
 import { Stack, router } from "expo-router";
+import { Alert, View } from "react-native";
+import { useContext } from "react";
+import { ThemeContext, ThemeContextProvider } from "@/contexts/ThemeContext";
 
 import IconButton from "@/Components/IconButton";
 
 export default function RootLayout() {
+  return (
+    <ThemeContextProvider>
+      <ThemedStack />
+    </ThemeContextProvider>
+  )
+}
+
+function ThemedStack() {
+  const {theme, setTheme, textIconColor, setTextIconColor} = useContext(ThemeContext)
+
   const sendData = () => {
     router.push({
       pathname: '/new-crime',
@@ -16,25 +29,32 @@ export default function RootLayout() {
       options= {{
         title: 'Criminal Intent',
         headerStyle: {
-          backgroundColor: '#6A1B9A'
+          backgroundColor: theme
         },
-        headerTintColor: 'white',
+        headerTintColor: textIconColor,
         headerRight: () => (
-          <IconButton icon="add" size={36} color="white" onPress={sendData} />
+          <View style={{ flexDirection: "row", gap: 16 }}>
+            <IconButton icon="add" size={36} color={textIconColor} onPress={sendData} />
+            <IconButton icon="settings-outline" size={36} color={textIconColor} onPress={() => Alert.alert("test")} />
+          </View>
         ),
         // iOS only: same button, but without the iOS 26 glass bubble behind it.
         unstable_headerRightItems: () => [
           {
             type: "custom",
-            element: <IconButton icon="add" size={36} color="white" onPress={() => router.push("/new-crime")} />,
+            element: <IconButton icon="add" size={36} color={textIconColor} onPress={sendData} />,
+            hidesSharedBackground: true,
+          },
+          {
+            type: "custom",
+            element: <IconButton icon="settings-outline" size={36} color={textIconColor} onPress={() => router.push("/change-theme")} />,
             hidesSharedBackground: true,
           },
         ],
       }}
     />
-    <Stack.Screen name="new-crime" options={{ title: "Criminal Intent", headerTintColor: "white", headerStyle: { backgroundColor: '#6A1B9A'} }} />
-
+    <Stack.Screen name="new-crime" options={{ title: "Criminal Intent", headerTintColor: textIconColor, headerStyle: { backgroundColor: theme} }} />
+    <Stack.Screen name="change-theme" options={{ title: "Criminal Intent", headerTintColor: textIconColor, headerStyle: { backgroundColor: theme } }} />
   </Stack>
-  
   );
 }
