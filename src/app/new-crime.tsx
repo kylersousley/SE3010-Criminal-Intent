@@ -86,7 +86,7 @@ export default function NewCrime() {
             <Text style={[styles.text, { color: mainTextColor }]}>Details</Text>
             <TextInput style={[styles.detailsInput, { color: mainTextColor }]} placeholder="What happened?" placeholderTextColor="gray" multiline submitBehavior="blurAndSubmit" returnKeyType="done" value={details} onChangeText={setDetails} />
         </View>
-        <MultiPlatformDatePicker value={date} mode="date" onValueChange={(_event, selectedDate) => setDate(selectedDate)} displayIOS="spinner" titleAndroid="date.toLocaleDateString()" />
+        <MultiPlatformDatePicker value={date} mode="date" onValueChange={(_event, selectedDate) => setDate(selectedDate)} displayIOS="spinner" titleAndroid={date.toLocaleDateString()} />
         <CustomCheckBox value={isChecked} onValueChange={setChecked} color={mainTextColor} text="Solved" />
         <AppButton title="Save" onPress={handleSave} />
     </View>

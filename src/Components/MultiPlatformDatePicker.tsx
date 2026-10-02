@@ -42,11 +42,13 @@ export default function MultiPlatformDatePicker({ value, mode, onValueChange, di
           onValueChange={onValueChange}
         />
       ) : (
-        <Button
-          title={titleAndroid}
-          color={theme}
-          onPress={showDatePicker}
-        />
+        <View style={styles.buttonWrapper}>
+          <Button
+            title={titleAndroid}
+            color={theme}
+            onPress={showDatePicker}
+          />
+        </View>
       )}
     </View>
   );
@@ -61,5 +63,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
   },
+  buttonWrapper: {
+    width: '100%'
+  }
 })
 

@@ -35,7 +35,7 @@ function ThemedStack() {
         headerRight: () => (
           <View style={{ flexDirection: "row", gap: 16 }}>
             <IconButton icon="add" size={36} color={textIconColor} onPress={sendData} />
-            <IconButton icon="settings-outline" size={36} color={textIconColor} onPress={() => Alert.alert("test")} />
+            <IconButton icon="settings-outline" size={36} color={textIconColor} onPress={() => router.push("/change-theme")} />
           </View>
         ),
         unstable_headerRightItems: () => [
