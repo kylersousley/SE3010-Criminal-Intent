@@ -4,7 +4,7 @@ import { ThemeContext } from "@/contexts/ThemeContext";
 import AppButton from "@/Components/AppButton";
 
 export default function ChangeTheme() {
-    const { setTheme, mainTextColor, setMainTextColor, setTextIconColor, themeBackgroundColor, setThemeBackgroundColor } = useContext(ThemeContext)
+    const { changeTheme, setTheme, mainTextColor, setMainTextColor, setTextIconColor, themeBackgroundColor, setThemeBackgroundColor } = useContext(ThemeContext)
 
     const themePurple = () => {
         setTheme('#6A1B9A')
@@ -44,11 +44,11 @@ export default function ChangeTheme() {
     return(
         <View style={[styles.container, { backgroundColor: themeBackgroundColor }]}>
             <Text style={[styles.text, { color: mainTextColor }]}>Pick a theme!</Text>
-            <AppButton title="Purple" onPress={themePurple} />
-            <AppButton title="Blue" onPress={themeBlue} />
-            <AppButton title="Red" onPress={themeRed} />
-            <AppButton title="White" onPress={themeWhite} />
-            <AppButton title="Dark" onPress={themeDark} />
+            <AppButton title="Purple" onPress={() => changeTheme('purple')} />
+            <AppButton title="Blue" onPress={() => changeTheme('blue')} />
+            <AppButton title="Red" onPress={() => changeTheme('red')} />
+            <AppButton title="White" onPress={() => changeTheme('white')} />
+            <AppButton title="Dark" onPress={() => changeTheme('dark')} />
         </View>
     )
 }
